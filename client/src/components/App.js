@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Container, Box, Heading, Image, Card, Text } from "gestalt";
+// prettier-ignore
+import { Container, Box, Heading, Image, Card, Text, SearchField, Icon } from "gestalt";
 import { Link } from "react-router-dom";
 
 import "./App.css";
@@ -11,7 +12,8 @@ const strapi = new Strapi(apiUrl);
 
 class App extends Component {
   state = {
-    brands: []
+    brands: [],
+    searchTerm: ""
   };
 
   async componentDidMount() {
@@ -38,10 +40,31 @@ class App extends Component {
     }
   }
 
+  handleChange = ({ value }) => {
+    this.setState({ searchTerm: value });
+  };
+
   render() {
-    const { brands } = this.state;
+    const { brands, searchTerm } = this.state;
     return (
       <Container>
+        {/* Brands Search Field */}
+        <Box display="flex" justifyContent="center" marginTop={4}>
+          <SearchField
+            id="searchField"
+            accessibilityLabel="Brands Search Field"
+            onChange={this.handleChange}
+            placeholder="Search Brands"
+          />
+          <Box margin={2}>
+            <Icon
+              icon="filter"
+              color={searchTerm ? "orange" : "gray"}
+              size={20}
+              accessibilityLabel="Filter"
+            />
+          </Box>
+        </Box>
         {/* Brands Section */}
         <Box display="flex" justifyContent="center" marginBottom={2}>
           {/* Brands Header */}
