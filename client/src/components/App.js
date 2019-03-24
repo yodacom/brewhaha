@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Box, Heading, Image, Text } from "gestalt";
+import { Container, Box, Heading, Image, Card, Text } from "gestalt";
 import { Link } from "react-router-dom";
 
 import "./App.css";
@@ -63,31 +63,34 @@ class App extends Component {
           justifyContent="around"
         >
           {brands.map(brand => (
-            <Box margin={2} width={200} key={brand._id}>
-              {
-                <Box height={200} width={200}>
-                  <Image
-                    alt="Brand"
-                    naturalHeight={1}
-                    naturalWidth={1}
-                    src={`${apiUrl}${brand.image.url}`}
-                  />
-                </Box>
-              }
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                direction="column"
+            <Box paddingY={4} margin={2} width={200} key={brand._id}>
+              <Card
+                image={
+                  <Box height={200} width={200}>
+                    <Image
+                      alt="Brand"
+                      naturalHeight={1}
+                      naturalWidth={1}
+                      src={`${apiUrl}${brand.image.url}`}
+                    />
+                  </Box>
+                }
               >
-                <Text bold size="xl">
-                  {brand.name}
-                </Text>
-                <Text>{brand.description}</Text>
-                <Text bold size="xl">
-                  <Link to={`${brand._id}`}>See Brews</Link>
-                </Text>
-              </Box>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  direction="column"
+                >
+                  <Text bold size="xl">
+                    {brand.name}
+                  </Text>
+                  <Text>{brand.description}</Text>
+                  <Text bold size="xl">
+                    <Link to={`${brand._id}`}>See Brews</Link>
+                  </Text>
+                </Box>
+              </Card>
             </Box>
           ))}
         </Box>
