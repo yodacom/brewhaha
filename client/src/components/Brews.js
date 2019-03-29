@@ -1,6 +1,16 @@
 import React, { Component } from "react";
 import Strapi from "strapi-sdk-javascript/build/main";
-import { Box, Heading, Text, Image, Card, Button } from "gestalt";
+import {
+  Box,
+  Heading,
+  Text,
+  Image,
+  Card,
+  Button,
+  Mask,
+  IconButton
+} from "gestalt";
+import { Link } from "react-router-dom";
 
 const apiUrl = process.env.API_URL || "http://localhost:1337";
 const strapi = new Strapi(apiUrl);
@@ -8,7 +18,8 @@ const strapi = new Strapi(apiUrl);
 class Brews extends Component {
   state = {
     brews: [],
-    brand: ""
+    brand: "",
+    cartItems: []
   };
   async componentDidMount() {
     // console.log(this.props.match.params.brandId)
@@ -41,8 +52,26 @@ class Brews extends Component {
       console.error(err);
     }
   }
+  addToCart = brew => {
+    const alreadyInCart = this.state.cartItems.findIndex(
+      item => item._id === brew._id
+    );
+
+    if (alreadyInCart === -1) {
+      const updatedItems = this.state.cartItems.concat({
+        ...brew,
+        quantity: 1
+      });
+      this.setState({ cartItems: updatedItems });
+    } else {
+      const updatedItems = [...this.state.cartItems];
+      updatedItems[alreadyInCart].quantity += 1;
+      this.setState({ cartItems: updatedItems });
+    }
+  };
+
   render() {
-    const { brand, brews } = this.state;
+    const { brand, brews, cartItems } = this.state;
 
     return (
       <Box
@@ -50,6 +79,11 @@ class Brews extends Component {
         display="flex"
         justifyContent="center"
         alignItems="start"
+        dangerouslySetInlineStyle={{
+          __style: {
+            flexWrap: "wrap-reverse"
+          }
+        }}
       >
         {/* Brews Section */}
 
@@ -102,7 +136,11 @@ class Brews extends Component {
                     <Text color="orchid">${brew.price}</Text>
                     <Box marginTop={2}>
                       <Text bold size="xl">
-                        <Button color="blue" text="Add to Cart" />{" "}
+                        <Button
+                          onClick={() => this.addToCart(brew)}
+                          color="blue"
+                          text="Add to Cart"
+                        />
                       </Text>
                     </Box>
                   </Box>
@@ -110,6 +148,61 @@ class Brews extends Component {
               </Box>
             ))}
           </Box>
+        </Box>
+        {/* User Cart Area */}
+        <Box alignSelf="end" marginTop={2} marginLeft={8}>
+          <Mask shape="rounded" wash>
+            <Box
+              display="flex"
+              direction="column"
+              alignItems="center"
+              padding={2}
+            >
+              <Heading align="center" size="md">
+                Your Cart
+              </Heading>
+
+              <Text color="gray" italic>
+                {cartItems.length} items selected
+              </Text>
+
+              {/* User Cart Heading */}
+
+              {cartItems.map(item => (
+                <Box key={item._id} display="flex" alignItems="center">
+                  <Text>
+                    {item.name} x {item.quantity} -{" "}
+                    {(item.quantity * item.price).toFixed(2)}
+                  </Text>
+                  <IconButton
+                    accessibilityLabel="Delete Item"
+                    icon="cancel"
+                    size="sm"
+                    iconColor="red"
+                  />
+                </Box>
+              ))}
+
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                direction="column"
+              >
+                <Box margin={3}>
+                  {cartItems.length === 0 && (
+                    <Text color="red">Please Select an Item</Text>
+                  )}
+                  <Text size="lg">Total: $3.99</Text>
+                  <Text>
+                    <Link to="/checkout">Checkout</Link>
+                  </Text>
+                </Box>
+              </Box>
+
+              {/* Cart Items */}
+            </Box>
+          </Mask>
         </Box>
       </Box>
     );
