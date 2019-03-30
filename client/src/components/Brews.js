@@ -11,6 +11,7 @@ import {
   IconButton
 } from "gestalt";
 import { Link } from "react-router-dom";
+import { calculatePrice } from "../utils";
 
 const apiUrl = process.env.API_URL || "http://localhost:1337";
 const strapi = new Strapi(apiUrl);
@@ -68,6 +69,13 @@ class Brews extends Component {
       updatedItems[alreadyInCart].quantity += 1;
       this.setState({ cartItems: updatedItems });
     }
+  };
+
+  deleteItemFromCart = itemToDeleteId => {
+    const filteredItems = this.state.cartItems.filter(
+      item => item._id !== itemToDeleteId
+    );
+    this.setState({ cartItems: filteredItems });
   };
 
   render() {
@@ -158,7 +166,7 @@ class Brews extends Component {
               alignItems="center"
               padding={2}
             >
-              <Heading align="center" size="md">
+              <Heading align="center" size="sm">
                 Your Cart
               </Heading>
 
@@ -179,6 +187,7 @@ class Brews extends Component {
                     icon="cancel"
                     size="sm"
                     iconColor="red"
+                    onClick={() => this.deleteItemFromCart(item._id)}
                   />
                 </Box>
               ))}
@@ -193,7 +202,7 @@ class Brews extends Component {
                   {cartItems.length === 0 && (
                     <Text color="red">Please Select an Item</Text>
                   )}
-                  <Text size="lg">Total: $3.99</Text>
+                  <Text size="lg">Total: {calculatePrice(cartItems)}</Text>
                   <Text>
                     <Link to="/checkout">Checkout</Link>
                   </Text>
