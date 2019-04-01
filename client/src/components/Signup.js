@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import { Container, Box, Heading, Button, Text, TextField } from "gestalt";
+import ToastMessage from "./ToastMessage";
 
 class Signup extends Component {
   state = {
     username: "",
     email: "",
-    password: ""
+    password: "",
+    toast: false,
+    toastMessage: ""
   };
 
   handleChange = ({ event, value }) => {
@@ -15,10 +18,26 @@ class Signup extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+
+    if (this.isFormEmpty(this.state)) {
+      this.showToast("Fill in all fields");
+      return;
+    }
     console.log("submitted");
   };
 
+  isFormEmpty = ({ username, password, email }) => {
+    return !username || !email || !password;
+  };
+
+  showToast = toastMessage => {
+    this.setState({ toast: true, toastMessage });
+    setTimeout(() => this.setState({ toast: false, toastMessage: "" }), 5000);
+  };
+
   render() {
+    const { toastMessage, toast } = this.state;
+
     return (
       <Container>
         <Box
@@ -85,6 +104,7 @@ class Signup extends Component {
             <Button inline color="blue" type="submit" text="Submit" />
           </form>
         </Box>
+        <ToastMessage show={toast} message={toastMessage} />
       </Container>
     );
   }

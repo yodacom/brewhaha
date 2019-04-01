@@ -32,7 +32,7 @@ const Navbar = () => (
         </Box>
 
         <Heading size="xs" color="orange">
-          BrewHaHa
+          BeerZap
         </Heading>
       </Box>
     </NavLink>
