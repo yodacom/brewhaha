@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Box, Heading, Button, Text, TextField } from "gestalt";
+import { Container, Box, Heading, Button, TextField } from "gestalt";
 import ToastMessage from "./ToastMessage";
 import Strapi from "strapi-sdk-javascript/build/main";
 import { setToken } from "../utils";
